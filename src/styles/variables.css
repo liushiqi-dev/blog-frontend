@@ -1,0 +1,49 @@
+/**
+ * CSS 变量定义（Apple 风格设计系统）
+ *
+ * 💡 八股文关联：
+ * - 设计令牌(Design Tokens)：将视觉设计决策抽象为变量，类比后端的配置文件
+ * - 主题切换：修改变量值即可全局换肤，类比后端的多环境配置
+ *
+ * 数据流程：组件 CSS 中写 var(--app-primary) → 浏览器解析时替换为实际色值
+ */
+
+:root {
+  /* ========== 主色调 ========== */
+  --app-primary: #0071e3;          /* Apple Blue，用于按钮、链接 */
+  --app-primary-hover: #0077ed;    /* 主色hover态 */
+  --app-primary-light: rgba(0, 113, 227, 0.1);  /* 主色浅色背景，用于标签 */
+  --app-primary-foreground: #ffffff;  /* 主色上的文字颜色 */
+
+  /* ========== 背景色 ========== */
+  --app-background: #ffffff;       /* 页面背景 */
+  --app-muted-background: #f5f5f7; /* 浅灰背景，用于分区 */
+  --app-card: #ffffff;             /* 卡片背景 */
+
+  /* ========== 文字色 ========== */
+  --app-foreground: #1d1d1f;       /* 主文字（近黑） */
+  --app-muted-foreground: #86868b; /* 次要文字（灰色） */
+
+  /* ========== 边框 ========== */
+  --app-border: #f0f0f0;           /* 卡片边框 */
+  --app-input-border: #e8e8ed;     /* 输入框边框 */
+
+  /* ========== 圆角 ========== */
+  --app-radius-sm: 6px;
+  --app-radius-md: 10px;
+  --app-radius-lg: 16px;
+  --app-radius-full: 9999px;       /* 胶囊形 */
+
+  /* ========== 阴影（Apple风格柔和阴影） ========== */
+  --app-shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
+  --app-shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
+  --app-shadow-header: 0 1px 0 rgba(0, 0, 0, 0.04);
+
+  /* ========== 状态色 ========== */
+  --app-success: #34c759;
+  --app-warning: #ff9500;
+  --app-error: #ff3b30;
+
+  /* ========== 字体 ========== */
+  --app-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+}
