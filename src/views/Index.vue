@@ -50,6 +50,27 @@
             >
               草稿
             </el-tag>
+
+            <div v-if="isAdmin" class="post-actions">
+              <el-button
+                :icon="EditPen"
+                text
+                type="primary"
+                size="small"
+                @click.stop="handleEdit(post.id)"
+              >
+                编辑
+              </el-button>
+              <el-button
+                :icon="Delete"
+                text
+                type="danger"
+                size="small"
+                @click.stop="handleDelete(post)"
+              >
+                删除
+              </el-button>
+            </div>
           </div>
         </article>
 
@@ -78,8 +99,10 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Plus } from '@element-plus/icons-vue'
-import { getPostListApi } from '@/api/post'
+import { Plus, EditPen, Delete } from '@element-plus/icons-vue'
+import { ElMessage, ElMessageBox } from 'element-plus'
+import { getPostListApi, deletePostApi } from '@/api/post'
+import { isAdmin } from '@/stores/user'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 
@@ -115,7 +138,30 @@ function goToDetail(id) {
 }
 
 function handleNewPost() {
-  router.push('/post-editor')
+  router.push('/posts/create')
+}
+
+function handleEdit(id) {
+  router.push(`/posts/${id}/edit`)
+}
+
+async function handleDelete(post) {
+  try {
+    await ElMessageBox.confirm(
+      `确定要删除文章「${post.title}」吗？`,
+      '删除确认',
+      {
+        confirmButtonText: '删除',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }
+    )
+    await deletePostApi(post.id)
+    ElMessage.success('删除成功')
+    fetchPostList()
+  } catch (error) {
+    // 用户点击取消或请求失败（失败已在拦截器中提示）
+  }
 }
 
 function handlePageChange() {
@@ -228,7 +274,13 @@ onMounted(() => {
 .post-footer {
   display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 8px;
+}
+
+.post-actions {
+  display: flex;
+  gap: 4px;
 }
 
 .pagination {

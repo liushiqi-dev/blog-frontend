@@ -13,7 +13,7 @@
       <nav class="nav-menu">
         <router-link to="/" class="nav-link">首页</router-link>
         <router-link to="/categories" class="nav-link">分类</router-link>
-        <router-link to="/post-editor" class="nav-link">写文章</router-link>
+        <router-link to="/posts/create" class="nav-link">写文章</router-link>
       </nav>
 
       <!-- 右侧：根据登录状态显示不同内容 -->

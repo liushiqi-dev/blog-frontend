@@ -29,6 +29,30 @@ const routes = [
     name: 'post-detail',
     component: () => import('@/views/PostDetail.vue'),
     meta: { title: '文章详情' }
+  },
+  {
+    path: '/categories',
+    name: 'categories',
+    component: () => import('@/views/Categories.vue'),
+    meta: { title: '分类管理' }
+  },
+  {
+    path: '/profile',
+    name: 'profile',
+    component: () => import('@/views/Profile.vue'),
+    meta: { title: '个人中心' }
+  },
+  {
+    path: '/posts/create',
+    name: 'post-create',
+    component: () => import('@/views/PostEditor.vue'),
+    meta: { title: '写文章' }
+  },
+  {
+    path: '/posts/:id/edit',
+    name: 'post-edit',
+    component: () => import('@/views/PostEditor.vue'),
+    meta: { title: '编辑文章' }
   }
 ]
 
