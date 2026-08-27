@@ -34,6 +34,21 @@
           </div>
         </header>
 
+        <!-- 点赞按钮 -->
+        <div class="post-actions">
+          <el-button
+            round
+            :class="{ liked: post.liked }"
+            :loading="likeLoading"
+            @click="handleLike"
+          >
+            <svg class="like-icon" viewBox="0 0 24 24">
+              <path fill="currentColor" d="M1 21h4V9H1v12zm22-11c0-1.1-.9-2-2-2h-6.31l.95-4.57.03-.32c0-.41-.17-.79-.44-1.06L14.17 1 7.58 7.59C7.22 7.95 7 8.45 7 9v10c0 1.1.9 2 2 2h9c.83 0 1.54-.5 1.84-1.22l3.02-7.05c.09-.23.14-.47.14-.73v-2z"/>
+            </svg>
+            {{ post.likeCount }}
+          </el-button>
+        </div>
+
         <!-- 文章摘要 -->
         <blockquote v-if="post.summary" class="post-summary">
           {{ post.summary }}
@@ -59,14 +74,18 @@
 
 <script setup>
 import { ref, computed, onMounted } from 'vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import { ArrowLeft, User, View } from '@element-plus/icons-vue'
-import { getPostDetailApi } from '@/api/post'
+import { ElMessage } from 'element-plus'
+import { getPostDetailApi, toggleLikeApi } from '@/api/post'
+import { isLoggedIn } from '@/stores/user'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 
 const route = useRoute()
+const router = useRouter()
 const loading = ref(false)
+const likeLoading = ref(false)
 const post = ref(null)
 
 // 简单的内容渲染（后续可替换为Markdown渲染器）
@@ -95,6 +114,24 @@ async function fetchPostDetail() {
 function formatDate(dateStr) {
   if (!dateStr) return ''
   return dateStr.split('T')[0].split(' ')[0]
+}
+
+// 点赞/取消点赞：未登录先提示登录；成功后本地翻转状态与计数（后端异步落库，前端乐观更新）
+async function handleLike() {
+  if (!isLoggedIn.value) {
+    ElMessage.warning('请先登录')
+    return
+  }
+  likeLoading.value = true
+  try {
+    await toggleLikeApi(post.value.id)
+    post.value.liked = !post.value.liked
+    post.value.likeCount += post.value.liked ? 1 : -1
+  } catch (error) {
+    // 失败已在响应拦截器中提示
+  } finally {
+    likeLoading.value = false
+  }
 }
 
 onMounted(() => {
@@ -145,6 +182,23 @@ onMounted(() => {
 
 .meta-dot {
   color: var(--app-muted-foreground);
+}
+
+.post-actions {
+  margin-top: 4px;
+}
+
+.like-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.post-actions .el-button {
+  color: var(--app-muted-foreground);
+}
+
+.post-actions .el-button.liked {
+  color: var(--el-color-danger);
 }
 
 .post-summary {

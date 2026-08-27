@@ -34,3 +34,9 @@ export function updatePostApi(id, data) {
 export function deletePostApi(id) {
   return request.delete(`/posts/${id}`)
 }
+
+// 点赞/取消点赞
+// PATCH /posts/{id}/like
+export function toggleLikeApi(id) {
+  return request.patch(`/posts/${id}/like`)
+}
