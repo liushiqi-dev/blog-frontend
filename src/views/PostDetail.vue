@@ -20,6 +20,11 @@
             </span>
             <span class="meta-dot">·</span>
             <span class="meta-item">{{ formatDate(post.createTime) }}</span>
+            <span class="meta-dot">·</span>
+            <span class="meta-item">
+              <el-icon><View /></el-icon>
+              {{ post.viewCount }}
+            </span>
             <template v-if="post.categoryNames">
               <span class="meta-dot">·</span>
               <el-tag size="small" effect="light" round>
@@ -55,7 +60,7 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import { useRoute } from 'vue-router'
-import { ArrowLeft, User } from '@element-plus/icons-vue'
+import { ArrowLeft, User, View } from '@element-plus/icons-vue'
 import { getPostDetailApi } from '@/api/post'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'

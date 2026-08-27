@@ -27,6 +27,11 @@
             <span class="post-author">{{ post.authorName }}</span>
             <span class="meta-dot">·</span>
             <span class="post-date">{{ formatDate(post.createTime) }}</span>
+            <span class="meta-dot">·</span>
+            <span class="post-views">
+              <el-icon :size="14"><View /></el-icon>
+              {{ post.viewCount }}
+            </span>
           </div>
 
           <h2 class="post-title">{{ post.title }}</h2>
@@ -100,7 +105,7 @@
 <script setup>
 import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
-import { Plus, EditPen, Delete } from '@element-plus/icons-vue'
+import { Plus, EditPen, Delete, View } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { getPostListApi, deletePostApi } from '@/api/post'
 import { isAdmin } from '@/stores/user'
@@ -245,6 +250,12 @@ onMounted(() => {
 
 .meta-dot {
   color: var(--app-muted-foreground);
+}
+
+.post-views {
+  display: flex;
+  align-items: center;
+  gap: 4px;
 }
 
 .post-title {
