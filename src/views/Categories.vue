@@ -5,8 +5,8 @@
     <main class="main-content">
       <h1 class="page-title">分类管理</h1>
 
-      <!-- 新建分类 -->
-      <section class="create-section">
+      <!-- 新建分类（仅管理员可见） -->
+      <section v-if="isAdmin" class="create-section">
         <h2 class="section-title">新建分类</h2>
         <el-form @submit.prevent="handleCreate">
           <div class="create-form">
@@ -50,7 +50,8 @@
             </template>
           </el-table-column>
 
-          <el-table-column label="操作" width="200" align="right">
+          <!-- 操作列（编辑/删除）仅管理员可见 -->
+          <el-table-column v-if="isAdmin" label="操作" width="200" align="right">
             <template #default="{ row }">
               <el-button
                 :icon="EditPen"
@@ -119,6 +120,7 @@ import {
 } from '@/api/category'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
+import { isAdmin } from '@/stores/user'
 
 const loading = ref(false)
 const categoryList = ref([])

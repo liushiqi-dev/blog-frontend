@@ -9,7 +9,8 @@
           <h1 class="page-title">全部文章</h1>
           <p class="page-subtitle">记录学习、分享技术、沉淀思考</p>
         </div>
-        <el-button type="primary" :icon="Plus" round @click="handleNewPost">
+        <!-- 新建文章仅管理员可见 -->
+        <el-button v-if="isAdmin" type="primary" :icon="Plus" round @click="handleNewPost">
           新建文章
         </el-button>
       </section>

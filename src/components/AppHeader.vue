@@ -12,8 +12,9 @@
       <!-- 中间：导航菜单 -->
       <nav class="nav-menu">
         <router-link to="/" class="nav-link">首页</router-link>
-        <router-link to="/categories" class="nav-link">分类</router-link>
-        <router-link to="/posts/create" class="nav-link">写文章</router-link>
+        <!-- 分类、写文章仅管理员可见，普通用户/未登录看不到 -->
+        <router-link v-if="isAdmin" to="/categories" class="nav-link">分类</router-link>
+        <router-link v-if="isAdmin" to="/posts/create" class="nav-link">写文章</router-link>
       </nav>
 
       <!-- 右侧：根据登录状态显示不同内容 -->
@@ -43,7 +44,7 @@ import { onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { EditPen } from '@element-plus/icons-vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
-import { state, isLoggedIn, fetchUserInfo, logout } from '@/stores/user'
+import { state, isLoggedIn, isAdmin, fetchUserInfo, logout } from '@/stores/user'
 
 const router = useRouter()
 
