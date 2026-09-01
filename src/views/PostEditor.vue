@@ -47,6 +47,21 @@
           </div>
         </section>
 
+        <!-- 中间：Markdown 实时预览 -->
+        <section class="editor-preview">
+          <div class="preview-card">
+            <h2 class="settings-title">实时预览</h2>
+            <div
+              v-if="form.content.trim()"
+              class="markdown-body preview-content"
+              data-color-mode="dark"
+              v-md-container
+              v-html="renderedPreview"
+            ></div>
+            <p v-else class="preview-placeholder">开始输入即可实时预览</p>
+          </div>
+        </section>
+
         <!-- 右侧：发布设置 -->
         <aside class="editor-aside">
           <div class="settings-card">
@@ -105,6 +120,7 @@ import { ArrowLeft, Promotion } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { getPostDetailApi, createPostApi, updatePostApi } from '@/api/post'
 import { getCategoryListApi } from '@/api/category'
+import { renderMarkdown, markdownContainer as vMdContainer } from '@/utils/markdown'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 
@@ -124,6 +140,12 @@ const form = reactive({
 })
 
 const categoryList = ref([])
+
+// 实时预览（共享 renderMarkdown 内部已含 DOMPurify 过滤）
+const renderedPreview = computed(() => {
+  if (!form.content) return ''
+  return renderMarkdown(form.content)
+})
 
 // 加载分类列表
 async function fetchCategoryList() {
@@ -239,8 +261,33 @@ onMounted(async () => {
 
 .editor-layout {
   display: grid;
-  grid-template-columns: 1fr 320px;
+  grid-template-columns: 1fr 1fr 320px;
   gap: 32px;
+}
+
+/* 中间：Markdown 实时预览 */
+.editor-preview {
+  min-width: 0;
+}
+
+.preview-card {
+  background-color: var(--app-card);
+  border: 1px solid var(--app-border);
+  border-radius: var(--app-radius-lg);
+  padding: 24px;
+  box-shadow: var(--app-shadow-sm);
+}
+
+/* 深色预览面板：底色与文字色由 github-markdown-dark 主题提供，这里只保留滚动约束 */
+.preview-content {
+  max-height: 640px;
+  overflow-y: auto;
+}
+
+.preview-placeholder {
+  margin: 0;
+  min-height: 200px;
+  color: var(--app-muted-foreground);
 }
 
 .editor-main {
@@ -297,9 +344,26 @@ onMounted(async () => {
   flex: 1;
 }
 
+/* 中屏：预览移到编辑区下方占满整行，发布设置保持右侧 */
+@media (max-width: 1100px) {
+  .editor-layout {
+    grid-template-columns: 1fr 320px;
+  }
+
+  .editor-preview {
+    grid-column: 1 / -1;
+    order: 3;
+  }
+}
+
 @media (max-width: 768px) {
   .editor-layout {
     grid-template-columns: 1fr;
+  }
+
+  /* 单列时恢复 DOM 顺序：编辑 → 预览 → 发布设置 */
+  .editor-preview {
+    order: 0;
   }
 }
 </style>

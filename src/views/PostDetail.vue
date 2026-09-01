@@ -55,7 +55,12 @@
         </blockquote>
 
         <!-- 文章正文 -->
-        <div class="post-content" v-html="renderedContent"></div>
+        <div
+          class="post-content markdown-body"
+          data-color-mode="dark"
+          v-md-container
+          v-html="renderedContent"
+        ></div>
 
         <!-- 更新时间 -->
         <footer v-if="post.updateTime && post.updateTime !== post.createTime" class="post-footer">
@@ -79,6 +84,7 @@ import { ArrowLeft, User, View } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { getPostDetailApi, toggleLikeApi } from '@/api/post'
 import { isLoggedIn } from '@/stores/user'
+import { renderMarkdown, markdownContainer as vMdContainer } from '@/utils/markdown'
 import AppHeader from '@/components/AppHeader.vue'
 import AppFooter from '@/components/AppFooter.vue'
 
@@ -88,15 +94,10 @@ const loading = ref(false)
 const likeLoading = ref(false)
 const post = ref(null)
 
-// 简单的内容渲染（后续可替换为Markdown渲染器）
+// Markdown 渲染（共享 renderMarkdown 内部已含 DOMPurify 过滤）
 const renderedContent = computed(() => {
   if (!post.value?.content) return ''
-  // 将换行符转换为<p>标签
-  return post.value.content
-    .split('\n')
-    .filter(line => line.trim())
-    .map(line => `<p>${line}</p>`)
-    .join('')
+  return renderMarkdown(post.value.content)
 })
 
 async function fetchPostDetail() {
@@ -213,14 +214,9 @@ onMounted(() => {
   font-style: italic;
 }
 
+/* 深色阅读面板：底色与文字色由 github-markdown-dark 主题提供，这里只补内边距 */
 .post-content {
-  font-size: 17px;
-  line-height: 1.8;
-  color: var(--app-foreground);
-}
-
-.post-content :deep(p) {
-  margin: 0 0 1.2em 0;
+  padding: 24px;
 }
 
 .post-footer {
