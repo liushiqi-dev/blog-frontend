@@ -1,0 +1,6 @@
+# 排除构建上下文里无关的大文件，加快 docker build
+node_modules
+dist
+.git
+.vscode
+*.log
