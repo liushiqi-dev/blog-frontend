@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-shell">
     <AppHeader />
 
     <main class="login-container">

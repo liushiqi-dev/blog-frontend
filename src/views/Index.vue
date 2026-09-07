@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="page-shell">
     <AppHeader />
 
     <main class="main-content">
@@ -15,8 +15,15 @@
         </el-button>
       </section>
 
-      <!-- 文章列表 -->
-      <section class="post-list" v-loading="loading">
+      <!-- 文章列表：加载中显示骨架屏 -->
+      <section class="post-list">
+        <template v-if="loading">
+          <div v-for="i in 3" :key="`sk-${i}`" class="post-card">
+            <el-skeleton animated :rows="3" />
+          </div>
+        </template>
+
+        <template v-else>
         <article
           v-for="post in postList"
           :key="post.id"
@@ -37,7 +44,8 @@
           <h2 class="post-title">{{ post.title }}</h2>
           <p class="post-summary">{{ post.summary }}</p>
 
-          <div class="post-footer">
+          <!-- 发布状态仅管理员可见 -->
+          <div v-if="isAdmin" class="post-footer">
             <el-tag
               v-if="post.status === 'PUBLISHED'"
               size="small"
@@ -80,7 +88,8 @@
           </div>
         </article>
 
-        <el-empty v-if="!loading && postList.length === 0" description="暂无文章" />
+        <el-empty v-if="postList.length === 0" description="暂无文章" />
+        </template>
       </section>
 
       <!-- 分页 -->
