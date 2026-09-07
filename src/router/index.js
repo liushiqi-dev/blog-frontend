@@ -32,6 +32,12 @@ const routes = [
     meta: { title: '文章详情' }
   },
   {
+    path: '/ask',
+    name: 'ask',
+    component: () => import('@/views/Ask.vue'),
+    meta: { title: '问我的博客' }
+  },
+  {
     path: '/categories',
     name: 'categories',
     component: () => import('@/views/Categories.vue'),
