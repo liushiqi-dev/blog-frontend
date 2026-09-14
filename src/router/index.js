@@ -44,6 +44,12 @@ const routes = [
     meta: { title: '分类管理' }
   },
   {
+    path: '/dashboard',
+    name: 'dashboard',
+    component: () => import('@/views/Dashboard.vue'),
+    meta: { title: '数据看板' }
+  },
+  {
     path: '/profile',
     name: 'profile',
     component: () => import('@/views/Profile.vue'),
@@ -69,7 +75,7 @@ const router = createRouter({
 })
 
 // 需要管理员权限才能访问的路由
-const adminRoutes = ['categories', 'post-create', 'post-edit']
+const adminRoutes = ['categories', 'post-create', 'post-edit', 'dashboard']
 
 // 全局前置守卫：设置页面标题 + 管理员路由拦截
 router.beforeEach(async (to, from, next) => {

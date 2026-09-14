@@ -13,9 +13,10 @@
       <nav class="nav-menu">
         <router-link to="/" class="nav-link">首页</router-link>
         <router-link to="/ask" class="nav-link">问博客</router-link>
-        <!-- 分类、写文章仅管理员可见，普通用户/未登录看不到 -->
+        <!-- 分类、写文章、看板仅管理员可见，普通用户/未登录看不到 -->
         <router-link v-if="isAdmin" to="/categories" class="nav-link">分类</router-link>
         <router-link v-if="isAdmin" to="/posts/create" class="nav-link">写文章</router-link>
+        <router-link v-if="isAdmin" to="/dashboard" class="nav-link">看板</router-link>
       </nav>
 
       <!-- 右侧：根据登录状态显示不同内容 -->
