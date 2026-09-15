@@ -1,22 +1,27 @@
 <template>
-  <div class="page-shell">
+  <div class="page-shell list-shell">
     <AppHeader />
 
     <main class="main-content">
-      <!-- 标题区 -->
-      <section class="page-header">
-        <div>
-          <h1 class="page-title">全部文章</h1>
-          <p class="page-subtitle">记录学习、分享技术、沉淀思考</p>
+      <!-- hero 带：点阵纹理/单一强调色等科技感点缀集中在这里，阅读区保持浅色 -->
+      <section class="hero">
+        <div class="hero-inner">
+          <p class="hero-kicker" v-reveal="0">代码 · 笔记 · 思考</p>
+          <h1 class="hero-title" v-reveal="1">每一门技术，都值得被<em>认真书写</em></h1>
+          <p class="hero-sub" v-reveal="2">从语言基础到工程实践，一篇一篇，慢慢写清楚</p>
         </div>
-        <!-- 新建文章仅管理员可见 -->
-        <el-button v-if="isAdmin" type="primary" :icon="Plus" round @click="handleNewPost">
-          新建文章
-        </el-button>
       </section>
 
-      <!-- 文章列表：加载中显示骨架屏 -->
+      <!-- 文章列表：白纸卡片 -->
       <section class="post-list">
+        <!-- 列表工具栏：入纸内与行文字同列对齐；新建文章仅管理员可见 -->
+        <section class="list-toolbar">
+          <h2 class="list-title">全部文章</h2>
+          <el-button v-if="isAdmin" type="primary" :icon="Plus" round @click="handleNewPost">
+            新建文章
+          </el-button>
+        </section>
+
         <template v-if="loading">
           <div v-for="i in 3" :key="`sk-${i}`" class="post-card">
             <el-skeleton animated :rows="3" />
@@ -25,9 +30,10 @@
 
         <template v-else>
         <article
-          v-for="post in postList"
+          v-for="(post, index) in postList"
           :key="post.id"
           class="post-card"
+          v-reveal="index"
           @click="goToDetail(post.id)"
         >
           <div class="post-meta">
@@ -200,52 +206,123 @@ onMounted(() => {
 </script>
 
 <style scoped>
+/* 首页灰底：与详情页同一套分层语言 */
+.list-shell {
+  background-color: var(--app-muted-background);
+}
+
 .main-content {
   max-width: 1280px;
   margin: 0 auto;
   padding: 64px 24px;
 }
 
-.page-header {
-  display: flex;
-  align-items: flex-end;
-  justify-content: space-between;
-  margin-bottom: 40px;
+/* hero 带：100vw 满幅出血，点阵纹理提供氛围但不抢内容 */
+.hero {
+  position: relative;
+  width: 100vw;
+  margin: -64px 0 0 calc(50% - 50vw);
+  padding: 104px 0 72px;
+  overflow: hidden;
 }
 
-.page-title {
-  font-size: 44px;
+.hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(var(--app-dot) 1px, transparent 1.5px);
+  background-size: 26px 26px;
+  -webkit-mask-image: linear-gradient(#000 55%, transparent);
+  mask-image: linear-gradient(#000 55%, transparent);
+}
+
+.hero-inner {
+  position: relative;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.hero-kicker {
+  color: var(--app-primary);
+  font-size: 14px;
+  letter-spacing: 0.12em;
+  margin: 0 0 14px;
+}
+
+.hero-title {
+  font-size: 48px;
   font-weight: 700;
-  line-height: 1.1;
+  line-height: 1.15;
   letter-spacing: -0.02em;
   color: var(--app-foreground);
-  margin: 0 0 8px 0;
+  margin: 0 0 14px;
 }
 
-.page-subtitle {
-  font-size: 16px;
+.hero-title em {
+  font-style: normal;
+  color: var(--app-primary);
+}
+
+.hero-sub {
+  font-size: 17px;
   color: var(--app-muted-foreground);
   margin: 0;
 }
 
-.post-list {
-  display: grid;
-  gap: 24px;
+.list-toolbar {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 20px 0 4px;
 }
 
-.post-card {
+.list-title {
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--app-foreground);
+  margin: 0;
+}
+
+/* 列表白纸：与灰底分离，和详情页的白纸卡片呼应；overflow 裁切 hover 高亮的直角 */
+.post-list {
+  display: grid;
+  margin-top: 40px;
   background-color: var(--app-card);
   border: 1px solid var(--app-border);
   border-radius: var(--app-radius-lg);
-  padding: 24px;
   box-shadow: var(--app-shadow-sm);
+  padding: 8px 36px;
+  overflow: hidden;
+}
+
+/* 流式列表：无间隙行；分隔线与文字左右边缘对齐，上下留白从宽 */
+.post-card {
+  position: relative;
+  /* 负外边距把 hover 高亮撑到纸边（与整列平行），padding 把文字收回与标题对齐 */
+  margin: 0 -36px;
+  padding: 28px 36px;
   cursor: pointer;
-  transition: box-shadow 0.3s ease, transform 0.3s ease;
+  transition: background-color var(--app-duration-mid) var(--app-ease-out);
+}
+
+.post-card::after {
+  content: "";
+  position: absolute;
+  left: 36px;
+  right: 36px;
+  bottom: 0;
+  height: 1px;
+  background-color: var(--app-border);
+}
+
+.post-card:last-child::after {
+  display: none;
 }
 
 .post-card:hover {
-  box-shadow: var(--app-shadow-md);
-  transform: translateY(-2px);
+  background-color: var(--app-primary-light);
 }
 
 .post-meta {
@@ -308,5 +385,29 @@ onMounted(() => {
   margin-top: 40px;
   display: flex;
   justify-content: center;
+}
+
+@media (max-width: 640px) {
+  .hero {
+    padding: 72px 0 48px;
+  }
+
+  .hero-title {
+    font-size: 32px;
+  }
+
+  .post-list {
+    padding: 4px 18px;
+  }
+
+  .post-card {
+    margin: 0 -18px;
+    padding: 24px 18px;
+  }
+
+  .post-card::after {
+    left: 18px;
+    right: 18px;
+  }
 }
 </style>

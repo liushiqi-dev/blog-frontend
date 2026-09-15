@@ -3,8 +3,8 @@ import { nextTick } from 'vue'
 import MarkdownIt from 'markdown-it'
 import DOMPurify from 'dompurify'
 import hljs from 'highlight.js'
-import 'github-markdown-css/github-markdown-dark.css'
-import 'highlight.js/styles/atom-one-dark.css'
+import 'github-markdown-css/github-markdown-light.css'
+import 'highlight.js/styles/github.css'
 import '@/styles/markdown.css'
 
 // html: false —— MD 内嵌 HTML 不直接渲染，统一交给 DOMPurify 兜底

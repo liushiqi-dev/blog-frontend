@@ -46,4 +46,13 @@
 
   /* ========== 字体 ========== */
   --app-font-sans: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+
+  /* ========== 动效令牌（丝滑感来源：全站统一缓动 + 时长分层） ========== */
+  --app-ease-out: cubic-bezier(0.22, 1, 0.36, 1);  /* 慢出曲线：入场/hover 统一使用 */
+  --app-duration-fast: 0.18s;  /* 微交互：变色 */
+  --app-duration-mid: 0.35s;   /* hover 位移、路由过渡 */
+  --app-duration-slow: 0.7s;   /* 滚动触发的入场渐入 */
+
+  /* ========== 首页 hero 带（低对比点阵纹理：提供氛围但不抢内容） ========== */
+  --app-dot: rgba(0, 113, 227, 0.16);
 }

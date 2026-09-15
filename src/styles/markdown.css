@@ -1,16 +1,11 @@
 /* Markdown 渲染配套样式：与 src/utils/markdown.js 一起使用（在两个主题之后引入，负责覆盖） */
 
-/* 深色阅读容器：github-markdown-dark 自带深色底，这里补圆角让它在浅色页面里像一块阅读面板 */
-.markdown-body[data-color-mode='dark'] {
-  border-radius: 8px;
-}
-
 /* fence 规则生成的代码块外壳：复制按钮 absolute 定位在右上角 */
 .markdown-body .md-code-block {
   position: relative;
 }
 
-/* pre 退化为透明外壳：底色/内边距/横向滚动统一交给 atom-one-dark 的 code.hljs，避免出现双层色块 */
+/* pre 退化为透明外壳：底色/内边距/横向滚动统一交给 github 高亮主题的 code.hljs，避免出现双层色块 */
 .markdown-body .md-code-block pre {
   margin: 0 0 16px;
   padding: 0;
@@ -22,8 +17,9 @@
   display: block;
   padding: 16px;
   overflow-x: auto;
-  background-color: #282c34; /* 与 atom-one-dark 底色一致，盖过 github css 对 code 的内联底色 */
-  color: #abb2bf;
+  background-color: #f6f8fa; /* GitHub 浅色代码块底色 */
+  color: #24292f;
+  border: 1px solid var(--app-border);
   border-radius: 6px;
 }
 
@@ -36,9 +32,9 @@
   padding: 3px 10px;
   font-size: 12px;
   line-height: 1.5;
-  color: #c9d1d9;
-  background-color: #2d333b;
-  border: 1px solid rgba(240, 246, 252, 0.15);
+  color: #57606a;
+  background-color: #ffffff;
+  border: 1px solid #d0d7de;
   border-radius: 6px;
   cursor: pointer;
   opacity: 0;
@@ -46,7 +42,7 @@
 }
 
 .markdown-body .md-copy-btn:hover {
-  background-color: #3d444d;
+  background-color: #f3f4f6;
 }
 
 .markdown-body .md-code-block:hover .md-copy-btn,

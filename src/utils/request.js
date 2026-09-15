@@ -45,8 +45,9 @@ request.interceptors.response.use(
       const status = error.response.status
 
       if (status === 401) {
-        // 未登录或Token失效，跳转登录页
+        // 未登录或Token失效：清 localStorage 并通知 store 同步清空内存态，跳转登录页
         localStorage.removeItem('token')
+        window.dispatchEvent(new Event('auth:logout'))
         ElMessage.error('登录已过期，请重新登录')
         import('@/router').then(({ default: router }) => {
           router.push('/login')

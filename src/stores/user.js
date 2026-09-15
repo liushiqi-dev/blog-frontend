@@ -47,8 +47,9 @@ async function fetchUserInfo() {
     const res = await getUserInfoApi()
     state.userInfo = res.data
   } catch (error) {
-    // token失效，清除登录状态
-    logout()
+    // 仅 401 代表 token 失效才登出；超时/网络抖动/后端冷启动慢等瞬态故障
+    // 不能误杀有效登录态（否则头部会突然变回未登录）
+    if (error?.response?.status === 401) logout()
   }
 }
 
@@ -58,5 +59,8 @@ function logout() {
   state.userInfo = null
   localStorage.removeItem('token')
 }
+
+// 任一请求 401 时同步清空响应式状态：拦截器因循环依赖不能直接 import 本模块，用事件同步
+window.addEventListener('auth:logout', logout)
 
 export { state, isLoggedIn, isAdmin, login, register, fetchUserInfo, logout }

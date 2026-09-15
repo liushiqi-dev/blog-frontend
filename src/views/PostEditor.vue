@@ -54,7 +54,6 @@
             <div
               v-if="form.content.trim()"
               class="markdown-body preview-content"
-              data-color-mode="dark"
               v-md-container
               v-html="renderedPreview"
             ></div>
