@@ -116,7 +116,7 @@
 import { ref, reactive, computed, onMounted } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { ArrowLeft, Promotion } from '@element-plus/icons-vue'
-import { ElMessage } from 'element-plus'
+import { ElMessage, ElMessageBox } from 'element-plus'
 import { getPostDetailApi, createPostApi, updatePostApi } from '@/api/post'
 import { getCategoryListApi } from '@/api/category'
 import { renderMarkdown, markdownContainer as vMdContainer } from '@/utils/markdown'
@@ -135,7 +135,8 @@ const form = reactive({
   content: '',
   summary: '',
   categoryIds: [],
-  status: 'PUBLISHED'
+  status: 'PUBLISHED',
+  version: null  // 乐观锁版本号：编辑时回显、提交时带回，新建时不传（DB 默认 0）
 })
 
 const categoryList = ref([])
@@ -166,6 +167,7 @@ async function fetchPostDetail(id) {
     form.content = post.content
     form.summary = post.summary || ''
     form.status = post.status
+    form.version = post.version
     // categoryNames 是逗号分隔的字符串，需要匹配回 categoryIds
     if (post.categoryNames) {
       const names = post.categoryNames.split(',')
@@ -205,6 +207,10 @@ async function handleSubmit() {
   if (form.summary.trim()) {
     data.summary = form.summary.trim()
   }
+  // 编辑时带回加载时的版本号，供后端乐观锁 where 条件比对
+  if (isEdit.value) {
+    data.version = form.version
+  }
 
   submitLoading.value = true
   try {
@@ -217,7 +223,19 @@ async function handleSubmit() {
     }
     router.push('/')
   } catch (error) {
-    // 错误已在响应拦截器中提示
+    // 乐观锁命中（后端 0 行更新返回“更新失败”）：提示拉最新版本，避免基于旧版本覆盖他人修改
+    if (isEdit.value && error?.message === '更新失败') {
+      try {
+        await ElMessageBox.confirm(
+          '文章已被他人修改，本次保存未生效。是否加载最新版本？',
+          '版本冲突',
+          { confirmButtonText: '加载最新', cancelButtonText: '取消', type: 'warning' }
+        )
+        await fetchPostDetail(route.params.id)
+      } catch {
+        // 用户选择取消，保留当前编辑内容
+      }
+    }
   } finally {
     submitLoading.value = false
   }
